@@ -1,34 +1,45 @@
+
+<!DOCTYPE html>
+<body>
+<h2>Welcome to population data online.</h2>
+	<p>
+		<h4>Click one of the cities below, or add one to your URL to view the population data.</h4>
+	</p>
+
 <?php
- 
-$city = $_GET['city'];
-$cities = array (
-  'New York' => 8175133,
-  'Los Angeles' => 3792621,
-  'Chicago' => 2695598,
-  'Houston' => 2099451,
-  'Philadelphia' => 1526006,
-);
-?>
- 
-<h2> Welcome to population data online. </h2>
- 
-<p>
-  <ul>
-    <?php
-      foreach ($cities as $name => $population) {
-        print '<li><a href="/population.php?city=' . $name . '">View the population of' . $name . '</a></li>';
-      }
-    ?>
-  </ul>
-</p>
- 
-<?php
- 
-if (!$city || !isset($cities[$city])) {
-  print 'Please click any of the above cities to view their populations, or add a valid city to your URL.';
+
+$localhost = '127.0.0.1';
+$username = 'root';
+$password = '';
+$connection = mysql_connect($localhost, $username, $password);
+
+if (!$connection) {
+  die('Unable to connect: ' . mysql_errno());
 }
- 
-else {
-  print 'The population of ' . $city . ' is ' . $cities[$city];
+
+$city = $_GET['city']; 
+
+if ($connection) {
+	$db_selected = mysql_select_db('day_4_exercises');
+    $result = mysql_query('SELECT city_name, population FROM population');
 }
+
+while ($row = mysql_fetch_array($result)) {
+    	// echo 'The population of' . "<a href=/Zoe/day-4-exercises/population.php?city=" . urlencode($row['city_name']) . 
+		// ">" . $row['city_name'] . "</a>" . ' is ' . $row['population'] . "<br>";
+
+	echo "<a href=/Zoe/day-4-exercises/population.php?city=" . urlencode($row['city_name']) . ">" . $row['city_name'] . "</a>" . "<br>";
+	if($city == $row['city_name']){
+		$value = $row['population'];
+	}
+}
+
+	echo "<br>";
+
+    echo 'The population of ' . $city . ' is ' . $value . "<br>";
+
+mysql_close($connection);
 ?>
+
+</body>
+</html>
